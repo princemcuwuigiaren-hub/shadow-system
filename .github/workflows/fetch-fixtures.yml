@@ -2,35 +2,38 @@ name: Fetch Fixtures
 
 on:
   schedule:
-    - cron: '0 22 * * *'  # runs daily at 22:00 UTC (11PM WAT)
-  workflow_dispatch:        # allows manual trigger from GitHub
+    - cron: '0 22 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   fetch:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Create data directory
         run: mkdir -p data
 
-      - name: Fetch today and tomorrow fixtures
+      - name: Fetch fixtures
         run: |
           TODAY=$(date -u +%Y-%m-%d)
           TOMORROW=$(date -u -d '+1 day' +%Y-%m-%d)
+          echo "Fetching fixtures for $TODAY and $TOMORROW"
           curl -s \
             -H "X-Auth-Token: aaaf3943f83f469a85a50abee5eacde6" \
             "https://api.football-data.org/v4/matches?dateFrom=$TODAY&dateTo=$TOMORROW" \
             -o data/fixtures.json
-          echo "Fetched fixtures for $TODAY and $TOMORROW"
-          cat data/fixtures.json | python3 -c "import json,sys; d=json.load(sys.stdin); print(f'Total matches: {len(d.get(\"matches\",[]))}')"
+          echo "Match count: $(python3 -c "import json; d=json.load(open('data/fixtures.json')); print(len(d.get('matches',[])))")"
 
-      - name: Commit fixtures
+      - name: Commit and push
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add data/fixtures.json
-          git diff --staged --quiet || git commit -m "Update fixtures $(date -u +%Y-%m-%d)"
+          git diff --staged --quiet || git commit -m "Fixtures $(date -u +%Y-%m-%d)"
           git push
           
