@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+
+    <!-- Background gradient — deep void -->
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#0F0F1E"/>
+      <stop offset="100%" stop-color="#050508"/>
+    </linearGradient>
+
+    <!-- Cartographer half — indigo -->
+    <linearGradient id="ind" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#A5B4FC"/>
+      <stop offset="100%" stop-color="#6366F1"/>
+    </linearGradient>
+
+    <!-- Gold half — amber -->
+    <linearGradient id="gold" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#FCD34D"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+
+    <!-- Glow behind the mark -->
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="16" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+  </defs>
+
+  <!-- BACKGROUND -->
+  <rect width="512" height="512" rx="108" fill="url(#bg)"/>
+
+  <!-- Ambient dual glow -->
+  <ellipse cx="200" cy="180" rx="130" ry="130" fill="#6366F1" opacity="0.12"/>
+  <ellipse cx="320" cy="340" rx="130" ry="130" fill="#D97706" opacity="0.10"/>
+
+  <!-- COMPASS NEEDLE — split diamond, two halves -->
+  <g filter="url(#glow)">
+
+    <!-- Top-left half: Cartographer (indigo) -->
+    <polygon points="256,86 256,256 116,256" fill="url(#ind)"/>
+    <polygon points="256,86 256,256 396,256" fill="url(#ind)" opacity="0"/>
+
+    <!-- Full needle shape built from 4 triangles for correct compass silhouette -->
+    <!-- North point (indigo) -->
+    <polygon points="256,72 300,256 212,256" fill="url(#ind)"/>
+    <!-- South point (gold) -->
+    <polygon points="256,440 212,256 300,256" fill="url(#gold)"/>
+    <!-- West point (indigo, dimmer) -->
+    <polygon points="72,256 256,212 256,300" fill="url(#ind)" opacity="0.55"/>
+    <!-- East point (gold, dimmer) -->
+    <polygon points="440,256 256,300 256,212" fill="url(#gold)" opacity="0.55"/>
+
+  </g>
+
+  <!-- Center seam — the meeting line between engines -->
+  <circle cx="256" cy="256" r="10" fill="#05050C" stroke="#DCE6F0" stroke-width="2" opacity="0.85"/>
+
+  <!-- Fine seam lines through the needle -->
+  <line x1="256" y1="72" x2="256" y2="440" stroke="#05050C" stroke-width="2.5" opacity="0.4"/>
+  <line x1="72" y1="256" x2="440" y2="256" stroke="#05050C" stroke-width="2.5" opacity="0.4"/>
+
+</svg>
